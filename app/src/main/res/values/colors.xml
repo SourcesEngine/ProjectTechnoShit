@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#03BFD9</color>
+    <color name="colorPrimaryDark">#028BA3</color>
+    <color name="colorAccent">#03BFD9</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray">#757575</color>
+
+    <color name="blue">#3f95ec</color>
+    <color name="darkGrey">#707070</color>
+    <color name="darkBlue">#253f66</color>
+    <color name="lightGray">#efefef</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+
+
+    <color name="blue_1">#BFD6F6</color>
+    <color name="blue_2">#8DBDFF</color>
+    <color name="blue_3">#64A1F4</color>
+    <color name="blue_4">#4A91F2</color>
+    <color name="blue_5">#3B7DD8</color>
+    <color name="card_graph_bg_color">#4A91F2</color>
+    <color name="graph_heading_color">#FFFFFF</color>
+
+    <color name="blue1">#1AB3C5</color>
+    <color name="skyBlue">#5996EF</color>
+    <color name="BlueBtn">#1499D0</color>
+</resources>

@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "615753046608",
+    "project_id": "hibycareassistant",
+    "storage_bucket": "hibycareassistant.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615753046608:android:2e1d1f4d3eef795f538f55",
+        "android_client_info": {
+          "package_name": "com.example.hibyassistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615753046608-c0gph5vce5ehcb5u80379m0m9thuajqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNGrgPh-qmHqWnnX06Dc7sSoz4o1X5nFQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615753046608-c0gph5vce5ehcb5u80379m0m9thuajqs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615753046608:android:09c611ca9b5385fe538f55",
+        "android_client_info": {
+          "package_name": "com.example.hibycareassistant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615753046608-c0gph5vce5ehcb5u80379m0m9thuajqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNGrgPh-qmHqWnnX06Dc7sSoz4o1X5nFQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615753046608-c0gph5vce5ehcb5u80379m0m9thuajqs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">HibyAssistant</string>
+    <string name="welcome_to_hibycare_assistant">Welcome to Hibycare Assistant!</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register_a_new_account">Register a New Account</string>
+    <string name="register">Register</string>
+    <string name="welcome_to_hi_by_care">Welcome To Hi-By-Care!</string>
+    <string name="ai">AI</string>
+    <string name="chat">Chat</string>
+    <string name="discover">Discover</string>
+    <string name="home">Home</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_to_hibycare_assistant2">Welcome to Hibycare Assistant!</string>
+    <string name="discover2">Discover</string>
+    <string name="chat2">Chat</string>
+    <string name="name">Name</string>
+    <string name="email2">Email</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login">Login</string>
+    <string name="password2">Password</string>
+    <string name="register2">Register</string>
+    <string name="get_started_text">Welcome to\nHiby Assistant</string>
+    <string name="image">image</string>
+    <string name="get_started">Get Started</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="forgot_password_msg">Enter the email address that you want to change password.</string>
+    <string name="on_submit_msg">We have sent a password recover instructions to your email.</string>
+    <string name="or">OR</string>
+    <string name="new_here">New Here? </string>
+    <string name="register3">Register</string>
+    <string name="login2">Login</string>
+    <string name="forgot_password2">Forgot Password?</string>
+    <string name="password3">Password</string>
+    <string name="email3">Email</string>
+    <string name="login1">Login</string>
+    <!--    <string name="forgot_password_msg">Don\'t worry! it happens. Please enter the email address associated with your account.</string>-->
+    <!--    <string name="on_submit_msg">Check out your mailbox, you will receive an email containing link where you can reset your password</string>-->
+    <!-- Add your web client ID from Firebase console -->
+    <string name="default_web_client_id">615753046608-gg5b8s96blbr7dv0v29f7v8lls28ucl6.apps.googleusercontent.com</string>
+    <string name="how_are_you_today">How Are You Today?</string>
+    <string name="hello_john_paul">Hello, John Paul</string>
+    <string name="terms_conditions"><![CDATA[Terms & Conditions]]></string>
+    <string name="terms_conditions1"><![CDATA[Terms & Conditions]]></string>
+    <string name="chat_history">Chat History</string>
+    <string name="create_new_post">Create new post</string>
+    <string name="community_forum">Community Forum</string>
+    <string name="pro">Pro</string>
+    <string name="search">Search...</string>
+    <string name="profile">Profile</string>
+    <string name="welcome">Welcome</string>
+    <string name="todo">TODO</string>
+    <string name="chat_history1">Chat History</string>
+    <item name="fabAddPost" type="id"></item>
+</resources>
