@@ -17,9 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.hibyassistant.adapters.PostAdapter;
 import com.example.hibyassistant.models.Post;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -169,37 +167,6 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-
-        // About App
-        findViewById(R.id.aboutAppRow).setOnClickListener(v -> {
-            // TODO: Implement about app functionality
-            Toast.makeText(this, "About App clicked", Toast.LENGTH_SHORT).show();
-        });
-
-        // Terms & Conditions
-        findViewById(R.id.termsRow).setOnClickListener(v -> {
-            // TODO: Implement terms & conditions functionality
-            Toast.makeText(this, "Terms & Conditions clicked", Toast.LENGTH_SHORT).show();
-        });
-
-        // Privacy Policy
-        findViewById(R.id.privacyRow).setOnClickListener(v -> {
-            // TODO: Implement privacy policy functionality
-            Toast.makeText(this, "Privacy Policy clicked", Toast.LENGTH_SHORT).show();
-        });
-
-        // Sign Out
-        findViewById(R.id.signOutRow).setOnClickListener(v -> {
-            signOut();
-        });
-    }
-
-    private void signOut() {
-        mAuth.signOut();
-        Intent intent = new Intent(this, SignInActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
     }
 
     @Override

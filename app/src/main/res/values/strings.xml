@@ -52,5 +52,11 @@
     <string name="welcome">Welcome</string>
     <string name="todo">TODO</string>
     <string name="chat_history1">Chat History</string>
+    <string name="dotdot">...</string>
+    <string name="milestone_type">Milestone Type</string>
+    <string name="select_milestone_type">Select milestone type</string>
+    <string name="select_type">Select type</string>
+    <string name="start_detection">Start Detection</string>
+    <string name="voice_command">Voice Command</string>
     <item name="fabAddPost" type="id"></item>
 </resources>

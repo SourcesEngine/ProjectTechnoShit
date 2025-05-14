@@ -21,6 +21,9 @@ targetSdk = "34"
 firebaseStorage = "21.0.1"
 firebaseCrashlyticsBuildtools = "3.0.3"
 firebaseMessaging = "24.1.1"
+cameraCore = "1.4.2"
+cameraLifecycle = "1.4.2"
+firebaseMlVision = "24.1.0"
 
 [libraries]
 google-firebase-auth = { module = "com.google.firebase:firebase-auth" }
@@ -41,6 +44,9 @@ play-services-auth = { group = "com.google.android.gms", name = "play-services-a
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
+camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
+firebase-ml-vision = { group = "com.google.firebase", name = "firebase-ml-vision", version.ref = "firebaseMlVision" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

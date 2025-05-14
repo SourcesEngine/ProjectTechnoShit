@@ -17,11 +17,11 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private List<Post> posts;
-    private OnLikeClickListener likeClickListener;
-    private OnCommentClickListener commentClickListener;
-    private OnProfileClickListener profileClickListener;
-    private OnPostLongPressListener longPressListener;
-    private String currentUserId;
+    private final OnLikeClickListener likeClickListener;
+    private final OnCommentClickListener commentClickListener;
+    private final OnProfileClickListener profileClickListener;
+    private final OnPostLongPressListener longPressListener;
+    private final String currentUserId;
 
     public interface OnLikeClickListener {
         void onLikeClick(Post post);

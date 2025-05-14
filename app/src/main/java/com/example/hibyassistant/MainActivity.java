@@ -4,26 +4,39 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hibyassistant.aitools.AIToolsActivity;
+import com.example.hibyassistant.calendar.CalendarActivity;
+import com.example.hibyassistant.support.SupportActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.Query;
 import com.example.hibyassistant.utils.NetworkUtils;
+import com.example.hibyassistant.adapters.NotificationsAdapter;
+import com.example.hibyassistant.models.Notification;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private TextView tvUserName;
+    private NotificationsAdapter notificationsAdapter;
+    private List<Notification> notifications = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 // Handle home navigation
                 return true;
             } else if (itemId == R.id.nav_calendar) {
-                // Handle calendar navigation
+                // Launch CalendarActivity
+                startActivity(new Intent(MainActivity.this, CalendarActivity.class));
                 return true;
             } else if (itemId == R.id.nav_chat) {
                 // Navigate to ChatBotActivity
@@ -91,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, CommunityForumActivity.class);
             startActivity(intent);
         });
+
+        // Initialize notifications
+        setupNotifications();
     }
 
     @Override
@@ -148,13 +165,46 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        
+        // Set up search functionality
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                performSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Optional: Implement real-time search as user types
+                return false;
+            }
+        });
+
         return true;
+    }
+
+    private void performSearch(String query) {
+        if (query.isEmpty()) {
+            return;
+        }
+
+        // Create an intent to show search results
+        Intent searchIntent = new Intent(this, SearchResultsActivity.class);
+        searchIntent.putExtra("search_query", query);
+        startActivity(searchIntent);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_sign_out) {
             signOut();
+            return true;
+        } else if (item.getItemId() == R.id.action_notifications) {
+            showNotificationsDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -238,5 +288,49 @@ public class MainActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null) {
             loadUserData();
         }
+    }
+
+    private void setupNotifications() {
+        String userId = mAuth.getCurrentUser().getUid();
+        
+        // Set up notifications adapter
+        notificationsAdapter = new NotificationsAdapter(notifications);
+        
+        // Listen for new notifications
+        db.collection("users").document(userId)
+            .collection("notifications")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .addSnapshotListener((value, error) -> {
+                if (error != null) {
+                    showMessage("Error loading notifications");
+                    return;
+                }
+
+                if (value != null) {
+                    notifications.clear();
+                    for (var doc : value.getDocuments()) {
+                        Notification notification = doc.toObject(Notification.class);
+                        if (notification != null) {
+                            notification.setId(doc.getId());
+                            notifications.add(notification);
+                        }
+                    }
+                    notificationsAdapter.updateNotifications(notifications);
+                }
+            });
+    }
+
+    private void showNotificationsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_notifications, null);
+        RecyclerView notificationsRecyclerView = view.findViewById(R.id.notificationsRecyclerView);
+        
+        notificationsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        notificationsRecyclerView.setAdapter(notificationsAdapter);
+        
+        builder.setView(view)
+               .setTitle("Notifications")
+               .setPositiveButton("Close", null)
+               .show();
     }
 }

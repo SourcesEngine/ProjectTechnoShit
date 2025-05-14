@@ -33,6 +33,7 @@ import com.example.hibyassistant.models.Comment;
 import com.example.hibyassistant.models.Message;
 import com.example.hibyassistant.models.Notification;
 import com.example.hibyassistant.models.Post;
+import com.example.hibyassistant.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -61,124 +62,130 @@ public class CommunityForumActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
     private EditText messageInput;
+    private List<User> searchResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community_forum);
 
-        // Check if user is signed in
-        mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() == null) {
-            // User is not signed in, redirect to SignInActivity
-            startActivity(new Intent(this, SignInActivity.class));
-            finish();
-            return;
-        }
-
-        // Initialize permission launcher
-        requestPermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestMultiplePermissions(),
-            permissions -> {
-                boolean allGranted = true;
-                for (Boolean isGranted : permissions.values()) {
-                    if (!isGranted) {
-                        allGranted = false;
-                        break;
-                    }
-                }
-                if (allGranted) {
-                    // Permissions granted, proceed with image picker
-                    launchImagePicker();
-                } else {
-                    Toast.makeText(this, "Storage permission is required to upload images", Toast.LENGTH_SHORT).show();
-                }
+        try {
+            // Check if user is signed in
+            mAuth = FirebaseAuth.getInstance();
+            if (mAuth.getCurrentUser() == null) {
+                startActivity(new Intent(this, SignInActivity.class));
+                finish();
+                return;
             }
-        );
 
-        // Initialize Firebase instances
-        db = FirebaseFirestore.getInstance();
-        storage = FirebaseStorage.getInstance();
+            // Initialize Firebase instances
+            db = FirebaseFirestore.getInstance();
+            storage = FirebaseStorage.getInstance();
 
-        // Initialize posts list
-        posts = new ArrayList<>();
-
-        // Initialize views
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        RecyclerView messagesRecyclerView = findViewById(R.id.messagesRecyclerView);
-        messageInput = findViewById(R.id.messageInput);
-        ImageButton sendButton = findViewById(R.id.sendButton);
-
-        // Set up toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Community Forum");
-        }
-
-        // Initialize PostAdapter with all required parameters
-        postAdapter = new PostAdapter(posts,
-            this::onLikeClick,
-            this::onCommentClick,
-            this::onProfileClick,
-            this::onPostLongPress);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(postAdapter);
-
-        // Initialize RecyclerView for messages
-        List<Message> messages = new ArrayList<>();
-        MessageAdapter adapter = new MessageAdapter(messages);
-        messagesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        messagesRecyclerView.setAdapter(adapter);
-
-        // Set up image picker launcher
-        imagePickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    try {
-                        selectedImageUri = result.getData().getData();
-                        if (selectedImageUri != null) {
-                            showCreatePostDialog();
+            // Initialize permission launcher
+            requestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                permissions -> {
+                    boolean allGranted = true;
+                    for (Boolean isGranted : permissions.values()) {
+                        if (!isGranted) {
+                            allGranted = false;
+                            break;
                         }
-                    } catch (Exception e) {
-                        Log.e("CommunityForum", "Error handling image selection", e);
-                        Toast.makeText(this, "Error selecting image", Toast.LENGTH_SHORT).show();
-                        selectedImageUri = null;
+                    }
+                    if (allGranted) {
+                        launchImagePicker();
+                    } else {
+                        Toast.makeText(this, "Storage permission is required to upload images", Toast.LENGTH_SHORT).show();
                     }
                 }
+            );
+
+            // Initialize posts list
+            posts = new ArrayList<>();
+            searchResults = new ArrayList<>();
+
+            // Initialize views
+            RecyclerView recyclerView = findViewById(R.id.recyclerView);
+            RecyclerView messagesRecyclerView = findViewById(R.id.messagesRecyclerView);
+            messageInput = findViewById(R.id.messageInput);
+            ImageButton sendButton = findViewById(R.id.sendButton);
+
+            // Set up toolbar
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("Community Forum");
             }
-        );
 
-        // Set up bottom navigation
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
-        bottomNavigation.setOnNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.navigation_home) {
-                loadPosts();
-                return true;
-            } else if (itemId == R.id.navigation_search) {
-                showSearchDialog();
-                return true;
-            } else if (itemId == R.id.navigation_add) {
-                showImagePickerOrCreatePost();
-                return true;
-            } else if (itemId == R.id.navigation_notifications) {
-                showNotifications();
-                return true;
-            } else if (itemId == R.id.navigation_profile) {
-                showProfile();
-                return true;
-            }
-            return false;
-        });
+            // Initialize PostAdapter with all required parameters
+            postAdapter = new PostAdapter(posts,
+                this::onLikeClick,
+                this::onCommentClick,
+                this::onProfileClick,
+                this::onPostLongPress);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(postAdapter);
 
-        // Set up send button click listener
-        sendButton.setOnClickListener(v -> sendMessage());
+            // Initialize RecyclerView for messages
+            List<Message> messages = new ArrayList<>();
+            MessageAdapter adapter = new MessageAdapter(messages);
+            messagesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            messagesRecyclerView.setAdapter(adapter);
 
-        // Load posts
-        loadPosts();
+            // Set up image picker launcher
+            imagePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        try {
+                            selectedImageUri = result.getData().getData();
+                            if (selectedImageUri != null) {
+                                showCreatePostDialog();
+                            }
+                        } catch (Exception e) {
+                            Log.e("CommunityForum", "Error handling image selection", e);
+                            Toast.makeText(this, "Error selecting image", Toast.LENGTH_SHORT).show();
+                            selectedImageUri = null;
+                        }
+                    }
+                }
+            );
+
+            // Set up bottom navigation
+            BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
+            bottomNavigation.setOnNavigationItemSelectedListener(item -> {
+                int itemId = item.getItemId();
+                if (itemId == R.id.navigation_home) {
+                    loadPosts();
+                    return true;
+                } else if (itemId == R.id.navigation_search) {
+                    showSearchDialog();
+                    return true;
+                } else if (itemId == R.id.navigation_add) {
+                    showImagePickerOrCreatePost();
+                    return true;
+                } else if (itemId == R.id.navigation_notifications) {
+                    showNotifications();
+                    return true;
+                } else if (itemId == R.id.navigation_profile) {
+                    showProfile();
+                    return true;
+                }
+                return false;
+            });
+
+            // Set up send button click listener
+            sendButton.setOnClickListener(v -> sendMessage());
+
+            // Load posts
+            loadPosts();
+        } catch (Exception e) {
+            Log.e("CommunityForum", "Error initializing activity", e);
+            Toast.makeText(this, "Error initializing activity: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     @Override
@@ -210,13 +217,13 @@ public class CommunityForumActivity extends AppCompatActivity {
                 if (value != null) {
                     for (QueryDocumentSnapshot doc : value) {
                         try {
-                            String postId = doc.getId();  // Get the auto-generated ID
+                            String postId = doc.getId();
                             Post post = doc.toObject(Post.class);
                             if (post != null) {
                                 post.setId(postId);
                                 
-                                // Get media URLs
-                                List<String> mediaUrls = (List<String>) doc.get("mediaUrls");
+                                // Get media URLs with proper type casting
+                                List<String> mediaUrls = doc.get("mediaUrls", List.class);
                                 if (mediaUrls != null) {
                                     post.setMediaUrls(mediaUrls);
                                 }
@@ -236,7 +243,7 @@ public class CommunityForumActivity extends AppCompatActivity {
                             }
                         } catch (Exception e) {
                             Log.e("CommunityForum", "Error processing post: " + e.getMessage());
-                            continue; // Skip this post and continue with others
+                            continue;
                         }
                     }
                     postAdapter.notifyDataSetChanged();
@@ -653,39 +660,39 @@ public class CommunityForumActivity extends AppCompatActivity {
             .limit(20)
             .get()
             .addOnSuccessListener(queryDocumentSnapshots -> {
-                List<com.example.hibyassistant.models.User> users = new ArrayList<>();
-                for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
-                    com.example.hibyassistant.models.User user = new com.example.hibyassistant.models.User(
+                searchResults.clear();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    User user = new User(
                         doc.getId(),
                         doc.getString("name"),
                         doc.getString("email"),
                         doc.getString("photoUrl")
                     );
-                    users.add(user);
+                    searchResults.add(user);
                 }
                 // Update UI with search results
-                updateSearchResults(users);
+                updateSearchResults();
             })
             .addOnFailureListener(e -> {
                 Toast.makeText(this, "Error searching users: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
     }
 
-    private void updateSearchResults(List<com.example.hibyassistant.models.User> users) {
+    private void updateSearchResults() {
         // Create and show a dialog with search results
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Search Results");
 
-        if (users.isEmpty()) {
+        if (searchResults.isEmpty()) {
             builder.setMessage("No users found");
         } else {
-            String[] userNames = new String[users.size()];
-            for (int i = 0; i < users.size(); i++) {
-                userNames[i] = users.get(i).getName();
+            String[] userNames = new String[searchResults.size()];
+            for (int i = 0; i < searchResults.size(); i++) {
+                userNames[i] = searchResults.get(i).getName();
             }
 
             builder.setItems(userNames, (dialog, which) -> {
-                com.example.hibyassistant.models.User selectedUser = users.get(which);
+                User selectedUser = searchResults.get(which);
                 startChat(selectedUser);
             });
         }
@@ -694,7 +701,7 @@ public class CommunityForumActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void startChat(com.example.hibyassistant.models.User user) {
+    private void startChat(User user) {
         // Navigate to chat with selected user
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("userId", user.getId());
